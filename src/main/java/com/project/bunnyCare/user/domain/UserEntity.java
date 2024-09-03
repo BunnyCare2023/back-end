@@ -1,19 +1,14 @@
-package com.project.bunnyCare.user.repository.entity;
+package com.project.bunnyCare.user.domain;
 
 import com.project.bunnyCare.common.BaseEntity;
-import com.project.bunnyCare.user.domain.Role;
-import com.project.bunnyCare.user.domain.SocialType;
-import com.project.bunnyCare.user.domain.User;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 @Builder
 @Entity
 @Table(name = "user")
 @ToString
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserEntity extends BaseEntity {
@@ -35,14 +30,21 @@ public class UserEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    @Column(name = "deleted_yn")
+    @Setter
+    private String deletedYn;
 
-    public User toUser(){
-        return User.builder()
-                .id(id)
-                .email(email)
-                .name(name)
-                .socialType(socialType)
-                .role(role)
-                .build();
+    @Setter
+    private String refreshToken;
+
+
+    public void registerNewUser(){
+        this.deletedYn = "N";
+        this.role = Role.ROLE_USER;
     }
+
+    public void setAdminRole(){
+        this.role = Role.ROLE_ADMIN;
+    }
+
 }

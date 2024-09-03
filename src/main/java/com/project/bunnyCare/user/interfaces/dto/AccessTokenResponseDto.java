@@ -1,4 +1,4 @@
-package com.project.bunnyCare.user.application.dto;
+package com.project.bunnyCare.user.interfaces.dto;
 
 public record AccessTokenResponseDto(String accessToken) {
 }

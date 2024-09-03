@@ -4,6 +4,7 @@ import com.project.bunnyCare.common.jwt.CustomAccessDeniedHandler;
 import com.project.bunnyCare.common.jwt.CustomAuthenticationEntryPoint;
 import com.project.bunnyCare.common.jwt.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -17,12 +18,16 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    @Value("${api.version}")
+    private String version;
+
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
     private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        String authUrl = "/api/"+version+"/auth/**";
         return http.csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session->session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .cors(Customizer.withDefaults())
@@ -35,7 +40,7 @@ public class SecurityConfig {
                 )
 
                 .authorizeHttpRequests(auth->auth
-                        .requestMatchers("/actuator/**","/api/auth","/favicon.ico").permitAll()
+                        .requestMatchers("/actuator/**",authUrl,"/favicon.ico").permitAll()
                         .anyRequest().authenticated()
                 )
                 .build();

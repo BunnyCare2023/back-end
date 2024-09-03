@@ -1,6 +1,6 @@
 package com.project.bunnyCare.common.jwt;
 
-import com.project.bunnyCare.user.domain.User;
+import com.project.bunnyCare.user.domain.UserEntity;
 import com.project.bunnyCare.user.domain.UserResponseCode;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -49,7 +49,7 @@ public class TokenUtil implements InitializingBean {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String issueAccessToken(User user) {
+    public String issueAccessToken(UserEntity user) {
         Date now = new Date();
         Date expiredAt = Date.from(LocalDateTime.now().plusHours(accessTokenHour).atZone(ZoneId.systemDefault()).toInstant());
 
@@ -67,7 +67,7 @@ public class TokenUtil implements InitializingBean {
                 .compact();
     }
 
-    public String issueRefreshToken(User user) {
+    public String issueRefreshToken(UserEntity user) {
         Date now = new Date();
         Date expiredAt = Date.from(LocalDateTime.now().plusHours(refreshTokenHour).atZone(ZoneId.systemDefault()).toInstant());
 

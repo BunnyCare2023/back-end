@@ -1,6 +1,6 @@
 package com.project.bunnyCare.common.jwt;
 
-import com.project.bunnyCare.user.domain.User;
+import com.project.bunnyCare.user.domain.UserEntity;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,7 +13,7 @@ import java.util.Collection;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CustomUserDetails implements UserDetails {
-    private User user;
+    private UserEntity user;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
