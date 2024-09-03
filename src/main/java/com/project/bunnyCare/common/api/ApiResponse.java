@@ -1,8 +1,13 @@
 package com.project.bunnyCare.common.api;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class ApiResponse<T> {
-    private final ApiResult result;
-    private final T data;
+    private ApiResult result;
+    private T data;
 
     public ApiResponse(ApiResult result, T data) {
         this.result = result;
