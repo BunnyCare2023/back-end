@@ -20,9 +20,11 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenUtil tokenProvider;
+    @Value("${api.version}")
+    private String version;
 
 
-    String[] noAuthenticationUrlList = {"/actuator","/api/auth"};
+    String[] noAuthenticationUrlList = {"/actuator","/api"+version+"/auth"};
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         if(!noAuthenticate(request))
