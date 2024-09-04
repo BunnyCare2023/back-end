@@ -26,7 +26,7 @@ public class UserService {
     @Transactional
     public JwtResponseDto authUser(AuthUserRequestDto dto) {
         UserEntity user = userReader.findByEmailAndSocialType(dto.email(), dto.socialType());
-        if(user != null && user.getDeletedYn().equals('Y')){
+        if(user != null && user.getDeletedYn().equals("Y")){
             throw new ApiException(UserResponseCode.DELETED_USER);
         }
         // 없으면 생성
@@ -47,9 +47,7 @@ public class UserService {
 
     @Transactional
     public JwtResponseDto issueAccessToken(String refreshToken, HttpServletRequest request) {
-        System.out.println("???");
         tokenUtil.validateToken(refreshToken, request);
-        System.out.println("hrere");
         UserEntity user = userReader.findByRefreshToken(refreshToken);
 
         String newAccessToken = tokenUtil.issueAccessToken(user);
