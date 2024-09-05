@@ -4,6 +4,8 @@ import com.project.bunnyCare.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.Objects;
+
 @Builder
 @Entity
 @Table(name = "user")
@@ -47,4 +49,16 @@ public class UserEntity extends BaseEntity {
         this.role = Role.ROLE_ADMIN;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserEntity that = (UserEntity) o;
+        return Objects.equals(id, that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(id);
+    }
 }

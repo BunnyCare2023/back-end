@@ -24,4 +24,10 @@ public class UserReaderImpl implements UserReader {
         return userRepository.findByRefreshToken(refreshToken)
                 .orElseThrow(() -> new ApiException(UserResponseCode.INVALID_REFRESH_TOKEN));
     }
+
+    @Override
+    public UserEntity findById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new ApiException(UserResponseCode.UNAUTHORIZED));
+    }
 }
