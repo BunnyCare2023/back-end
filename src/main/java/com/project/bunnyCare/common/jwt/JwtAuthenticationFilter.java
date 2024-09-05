@@ -6,7 +6,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -20,15 +19,11 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenUtil tokenProvider;
-    @Value("${api.version}")
-    private String version;
 
-
-    String[] noAuthenticationUrlList = {"/actuator","/api"+version+"/auth"};
+    String[] noAuthenticationUrlList = {"/actuator","/api/v1/auth"};
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if(!noAuthenticate(request))
-        {
+        if(!noAuthenticate(request)) {
             try {
                 String token = tokenProvider.parseBearerToken(request);
                 // 토큰 검증하기 JWT이므로 인가 서버에 요청하지 않아도됨
@@ -48,7 +43,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private boolean noAuthenticate(HttpServletRequest request) {
 
         String requestUri = request.getRequestURI();
-        log.info(requestUri);
         if(requestUri.equals("/")) return true;
 
         for(String uri: noAuthenticationUrlList){
