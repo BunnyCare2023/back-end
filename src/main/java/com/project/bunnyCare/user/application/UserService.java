@@ -47,8 +47,8 @@ public class UserService {
 
     @Transactional
     public JwtResponseDto issueAccessToken(String refreshToken, HttpServletRequest request) {
-        tokenUtil.validateToken(refreshToken, request);
         UserEntity user = userReader.findByRefreshToken(refreshToken);
+        tokenUtil.validateToken(refreshToken, request);
 
         String newAccessToken = tokenUtil.issueAccessToken(user);
         String newRefreshToken = tokenUtil.issueRefreshToken(user);

@@ -104,7 +104,6 @@ public class TokenUtil implements InitializingBean {
     public String parseBearerToken(HttpServletRequest request){
         try{
             String bearerToken = request.getHeader("Authorization");
-            System.out.println(bearerToken);
             if(bearerToken.startsWith("Bearer")){
                 return bearerToken.substring(7);
             }
