@@ -5,13 +5,15 @@ import com.project.bunnyCare.profileCard.domain.appearance.AppearanceType;
 
 public record AppearanceResponseDto(
         Long id,
-        AppearanceType type
+        AppearanceType type,
+        String koName
 ) {
 
     public static AppearanceResponseDto from(AppearanceEntity entity){
         return new AppearanceResponseDto(
                 entity.getId(),
-                entity.getType()
+                entity.getType(),
+                entity.getType().getName()
         );
     }
 }

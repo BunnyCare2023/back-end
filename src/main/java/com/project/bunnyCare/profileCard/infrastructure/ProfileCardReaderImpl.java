@@ -16,11 +16,11 @@ public class ProfileCardReaderImpl implements ProfileCardReader {
     private final ProfileCardRepository profileCardRepository;
     @Override
     public ProfileCardEntity findById(Long id) {
-        return profileCardRepository.findById(id).orElseThrow(()-> new ApiException(ProfileCardResponseCode.NOT_FOUND));
+        return profileCardRepository.findByIdAndDeleteYn(id, 'N').orElseThrow(()-> new ApiException(ProfileCardResponseCode.NOT_FOUND));
     }
 
     @Override
     public List<ProfileCardEntity> findAllByUserId(Long userId) {
-        return profileCardRepository.findAllByUserId(userId);
+        return profileCardRepository.findAllByUserIdAndDeleteYn(userId, 'N');
     }
 }

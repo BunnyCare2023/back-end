@@ -5,10 +5,7 @@ import com.project.bunnyCare.image.domain.ImageEntity;
 import com.project.bunnyCare.profileCard.domain.appearance.AppearanceEntity;
 import com.project.bunnyCare.user.domain.UserEntity;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.ToString;
+import lombok.*;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -19,6 +16,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class ProfileCardEntity extends BaseEntity {
 
     @Id
@@ -60,15 +58,22 @@ public class ProfileCardEntity extends BaseEntity {
         this.sex = sex;
     }
 
-
-    public ProfileCardEntity(String rabbitName, LocalDate birthDate, LocalDate adoptionDate, Character sex, ImageEntity profileImage, List<AppearanceEntity> appearances, UserEntity user, Character deleteYn) {
+    public void update(String rabbitName, LocalDate birthDate, LocalDate adoption, Character sex, ImageEntity profileImage){
         this.rabbitName = rabbitName;
         this.birthDate = birthDate;
-        this.adoptionDate = adoptionDate;
+        this.adoptionDate = adoption;
         this.sex = sex;
         this.profileImage = profileImage;
-        this.appearances = appearances;
-        this.user = user;
-        this.deleteYn = deleteYn;
     }
+
+    public void create(UserEntity user, ImageEntity profileImage, List<AppearanceEntity> appearances){
+        this.user = user;
+        this.profileImage = profileImage;
+        this.appearances = appearances;
+        this.deleteYn = 'N';
+    }
+
+
+
+
 }

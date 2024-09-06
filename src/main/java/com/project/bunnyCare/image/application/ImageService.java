@@ -47,6 +47,7 @@ public class ImageService {
         return imageStore.save(newImage);
     }
 
+    @Transactional
     public void deleteImage(ImageEntity profileImage) {
         profileImage.deleteImage();
         boolean isDeleted = false;

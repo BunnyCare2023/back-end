@@ -41,9 +41,9 @@ public class ProfileCardApiController {
     @PatchMapping("/{id}")
     public ResponseEntity<ApiResponse<ProfileCardDetailResponseDto>> updateProfileCard(
             @PathVariable Long id,
-            UpdateProfileCardRequestDto dto,
-            Authentication auth){
-        ProfileCardDetailResponseDto response = profileCardService.updateProfileCard(id, dto);
+            @ModelAttribute UpdateProfileCardRequestDto dto,
+            @RequestPart(value = "file", required = false) MultipartFile file){
+        ProfileCardDetailResponseDto response = profileCardService.updateProfileCard(id, dto, file);
         return ResponseEntity.ok(ApiResponse.ok(ProfileCardResponseCode.UPDATE, response));
     }
 

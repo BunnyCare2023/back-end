@@ -5,11 +5,7 @@ import com.project.bunnyCare.common.util.AuthUtil;
 import com.project.bunnyCare.image.application.ImageService;
 import com.project.bunnyCare.image.domain.ImageEntity;
 import com.project.bunnyCare.image.domain.ImageType;
-import com.project.bunnyCare.profileCard.domain.ProfileCardEntity;
-import com.project.bunnyCare.profileCard.domain.ProfileCardReader;
-import com.project.bunnyCare.profileCard.domain.ProfileCardResponseCode;
-import com.project.bunnyCare.profileCard.domain.appearance.AppearanceEntity;
-import com.project.bunnyCare.profileCard.domain.ProfileCardStore;
+import com.project.bunnyCare.profileCard.domain.*;
 import com.project.bunnyCare.profileCard.interfaces.dto.CreateProfileCardRequestDto;
 import com.project.bunnyCare.profileCard.interfaces.dto.ProfileCardDetailResponseDto;
 import com.project.bunnyCare.profileCard.interfaces.dto.UpdateProfileCardRequestDto;
@@ -17,8 +13,6 @@ import com.project.bunnyCare.user.domain.UserEntity;
 import com.project.bunnyCare.user.domain.UserReader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -34,23 +28,19 @@ public class ProfileCardService {
     private final UserReader userReader;
     private final ProfileCardStore profileCardStore;
     private final ProfileCardReader profileCardReader;
+    private final ProfileCardMapper profileCardMapper;
+    private final ProfileCardFactory profileCardFactory;
 
     @Transactional
     public ProfileCardDetailResponseDto createProfileCard(CreateProfileCardRequestDto dto, MultipartFile file) {
         log.info("createProfileCard rabbitName : {}", dto.rabbitName());
         Long userId = AuthUtil.getUserId();
+
         UserEntity user = userReader.findById(userId);
-
         ImageEntity newImage = imageService.uploadImage(file, ImageType.PROFILE);
+        ProfileCardEntity profileCard = profileCardMapper.toEntity(dto);
 
-        List<AppearanceEntity> appearanceEntities = dto.appearanceTypes().stream()
-                .map(AppearanceEntity::create)
-                .toList();
-        // ProfileCardEntity 생성 후 저장
-        ProfileCardEntity profileCard = dto.toEntity(newImage, appearanceEntities, user);
-        profileCard.getAppearances().forEach(appearance -> appearance.setProfile(profileCard));
-
-
+        profileCard = profileCardFactory.createProfileCard(profileCard, newImage, user, dto.appearanceTypes());
         return ProfileCardDetailResponseDto.from(profileCardStore.save(profileCard));
 
     }
@@ -67,14 +57,11 @@ public class ProfileCardService {
         }
         // 이미지 삭제
         imageService.deleteImage(profileCard.getProfileImage());
-        // 생김새 삭제처리
-        profileCard.getAppearances().forEach(AppearanceEntity::delete);
-        // 프로필 삭제처리
-        profileCard.delete();
+        profileCardFactory.deleteProfileCard(profileCard);
     }
 
     @Transactional
-    public ProfileCardDetailResponseDto updateProfileCard(Long id, UpdateProfileCardRequestDto dto) {
+    public ProfileCardDetailResponseDto updateProfileCard(Long id, UpdateProfileCardRequestDto dto, MultipartFile file) {
         log.info("updateProfileCard id: {}", id);
         Long userId = AuthUtil.getUserId();
         ProfileCardEntity profileCard = profileCardReader.findById(id);
@@ -83,8 +70,14 @@ public class ProfileCardService {
         if(!user.equals(profileCard.getUser())){
             throw new ApiException(ProfileCardResponseCode.FORBIDDEN);
         }
+        if(file != null){
+            imageService.deleteImage(profileCard.getProfileImage());
+            ImageEntity newImage = imageService.uploadImage(file, ImageType.PROFILE);
+            profileCard.update(dto.rabbitName(), dto.birthDate(), dto.adoptionDate(),dto.sex(), newImage);
+        }else {
+            profileCard.update(dto.rabbitName(), dto.birthDate(), dto.adoptionDate(),dto.sex());
 
-        profileCard.update(dto.rabbitName(), dto.birthDate(), dto.adoptionDate(),dto.sex());
+        }
         return ProfileCardDetailResponseDto.from(profileCard);
     }
 
@@ -97,6 +90,7 @@ public class ProfileCardService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public ProfileCardDetailResponseDto getProfileCardById(Long id) {
         log.info("getProfileCard by id : {}", id);
         return ProfileCardDetailResponseDto.from(profileCardReader.findById(id));
