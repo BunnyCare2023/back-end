@@ -8,7 +8,7 @@ import lombok.Getter;
 @Getter
 public enum ProfileCardResponseCode implements ResponseCode {
 
-    CRATED(201, "CREATED", "프로필 카드가 생성되었습니다."),
+    CRATED(200, "CREATED", "프로필 카드가 생성되었습니다."),
     NOT_FOUND(404, "NOT_FOUND", "프로필 카드를 찾을 수 없습니다."),
     FORBIDDEN(403, "FORBIDDEN", "프로필 카드에 접근할 권한이 없습니다."),
     DELETE(200, "OK", "프로필 카드가 삭제되었습니다."),

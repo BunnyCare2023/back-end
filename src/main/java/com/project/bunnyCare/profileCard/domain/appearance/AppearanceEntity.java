@@ -22,7 +22,6 @@ public class AppearanceEntity extends BaseEntity {
     private AppearanceType type;
 
     @ManyToOne
-    @Setter
     private ProfileCardEntity profile;
 
     @Column(name = "delete_yn", length = 1)
@@ -30,6 +29,10 @@ public class AppearanceEntity extends BaseEntity {
 
     public void delete(){
         this.deleteYn = 'Y';
+    }
+
+    public void updateProfileCard(ProfileCardEntity profile){
+        this.profile = profile;
     }
 
     public static AppearanceEntity create(AppearanceType type) {
