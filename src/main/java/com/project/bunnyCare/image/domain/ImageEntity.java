@@ -1,11 +1,14 @@
 package com.project.bunnyCare.image.domain;
 
 import com.project.bunnyCare.common.BaseEntity;
+import com.project.bunnyCare.feedback.domain.FeedbackEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+
+import java.util.List;
 
 @Table(name = "image")
 @Entity
@@ -39,6 +42,13 @@ public class ImageEntity extends BaseEntity {
 
     @Column(name = "delete_yn", length = 1)
     private Character deleteYn;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private FeedbackEntity feedback;
+
+    public void updateFeedback(FeedbackEntity feedback){
+        this.feedback = feedback;
+    }
 
     public void deleteImage(){
         this.deleteYn = 'Y';
