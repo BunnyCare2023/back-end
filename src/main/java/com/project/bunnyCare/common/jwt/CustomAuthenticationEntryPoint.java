@@ -27,7 +27,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         }
         log.error("AuthenticationEntryPoint: {}", code.getMessage());
         response.setContentType("application/json;charset=UTF-8");
-        response.setStatus(code.getCode());
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
         ObjectMapper obj = new ObjectMapper();
         ApiResponse<Void> api = ApiResponse.exception(code);
         response.getWriter().println(obj.writeValueAsString(api));
