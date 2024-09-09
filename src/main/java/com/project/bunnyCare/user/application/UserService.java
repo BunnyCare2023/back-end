@@ -3,6 +3,7 @@ package com.project.bunnyCare.user.application;
 
 import com.project.bunnyCare.common.exception.ApiException;
 import com.project.bunnyCare.common.jwt.TokenUtil;
+import com.project.bunnyCare.common.util.AuthUtil;
 import com.project.bunnyCare.user.domain.UserEntity;
 import com.project.bunnyCare.user.domain.UserReader;
 import com.project.bunnyCare.user.domain.UserResponseCode;
@@ -56,5 +57,13 @@ public class UserService {
         user.setRefreshToken(newRefreshToken);
 
         return new JwtResponseDto(newAccessToken, newRefreshToken);
+    }
+
+    @Transactional
+    public void deleteUser() {
+        Long userId = AuthUtil.getUserId();
+        // 유저와 관련된 모든 정보 삭제해야하나?
+        UserEntity user = userReader.findById(userId);
+        user.delete();
     }
 }

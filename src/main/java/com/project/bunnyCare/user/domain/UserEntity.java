@@ -49,6 +49,10 @@ public class UserEntity extends BaseEntity {
         this.role = Role.ROLE_ADMIN;
     }
 
+    public void delete(){
+        this.deletedYn = "Y";
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

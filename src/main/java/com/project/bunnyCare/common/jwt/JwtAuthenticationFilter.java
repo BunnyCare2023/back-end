@@ -44,6 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String requestUri = request.getRequestURI();
         if(requestUri.equals("/")) return true;
+        if(requestUri.equals("/api/v1/auth/delete")) return false;
 
         for(String uri: noAuthenticationUrlList){
             if(requestUri.contains(uri))
