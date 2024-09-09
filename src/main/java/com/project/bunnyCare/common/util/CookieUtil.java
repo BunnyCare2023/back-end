@@ -22,4 +22,17 @@ public class CookieUtil {
 
         response.addHeader("Set-Cookie", cookie.toString());
     }
+
+    public static void removeCookie(HttpServletResponse response, String refreshToken) {
+        ResponseCookie cookie = ResponseCookie.from(refreshToken, "")
+                .path("/")
+                .sameSite("None")
+                .httpOnly(true)
+                .secure(true)
+                .maxAge(0)
+                .build();
+        log.info("remove cookie: {}", cookie.toString());
+
+        response.addHeader("Set-Cookie", cookie.toString());
+    }
 }

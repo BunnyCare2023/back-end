@@ -17,7 +17,9 @@ public enum UserResponseCode implements ResponseCode {
     ISSUE_ACCESS_TOKEN_SUCCESS(200,"OK","액세스 토큰 발급 성공"),
     UNAUTHORIZED(401,"UNAUTHORIZED","인증되지 않은 사용자입니다"),
     FORBIDDEN(403,"FORBIDDEN","접근 권한이 없습니다"),
-    AUTH_SUCCESS(200,"OK","로그인 성공");
+    AUTH_SUCCESS(200,"OK","로그인 성공"),
+    LOGOUT_SUCCESS(200,"OK","로그아웃 성공"),
+    DELETE_SUCCESS(200,"OK","회원탈퇴 성공");
 
     private int code;
     private String status;
