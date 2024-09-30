@@ -1,5 +1,6 @@
 package com.project.bunnyCare.hospital.interfaces.dto;
 
+import com.project.bunnyCare.hospital.interfaces.dto.hospitalBreakTime.CreateHospitalBreakTimeRequestDto;
 import com.project.bunnyCare.hospital.interfaces.dto.hospitalHour.CreateHospitalHourRequestDto;
 import com.project.bunnyCare.hospital.interfaces.dto.hospitalService.CreateHospitalServiceRequestDto;
 
@@ -14,7 +15,12 @@ public record CreateHospitalRequestDto(
         String note,
         Double latitude,
         Double longitude,
+        String nightCare,
+        String sundayCare,
+        String holidayCare,
+        String fullTimeCare,
         List<CreateHospitalServiceRequestDto> hospitalServices,
-        List<CreateHospitalHourRequestDto> hospitalHours
+        List<CreateHospitalHourRequestDto> hospitalHours,
+        List<CreateHospitalBreakTimeRequestDto> hospitalBreakTimes
 ) {
 }

@@ -1,34 +1,35 @@
-package com.project.bunnyCare.hospital.domain.hospitalHour;
+package com.project.bunnyCare.hospital.domain.hospitalBreakTime;
 
-import com.project.bunnyCare.common.BaseEntity;
 import com.project.bunnyCare.hospital.domain.HospitalEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalTime;
 
-@Table(name = "hospital_hour")
+@Table(name = "hospital_break_time")
 @Entity
 @ToString
 @Getter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class HospitalHourEntity extends BaseEntity {
+@Builder
+public class HospitalBreakTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    private DayOfWeek dayOfWeek;
+    private WeekType weekType;
 
-    private LocalTime openTime;
+    private LocalTime startTime;
 
-    private LocalTime closeTime;
+    private LocalTime endTime;
 
     private Integer orderNo;
 
     @ManyToOne
     private HospitalEntity hospital;
+
+
 }

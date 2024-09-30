@@ -1,6 +1,7 @@
 package com.project.bunnyCare.hospital.application;
 
 import com.project.bunnyCare.hospital.domain.HospitalEntity;
+import com.project.bunnyCare.hospital.domain.hospitalBreakTime.HospitalBreakTimeEntity;
 import com.project.bunnyCare.hospital.domain.hospitalHour.HospitalHourEntity;
 import com.project.bunnyCare.hospital.domain.hospitalService.HospitalServiceEntity;
 import com.project.bunnyCare.hospital.interfaces.dto.CreateHospitalRequestDto;
@@ -27,6 +28,10 @@ public interface HospitalMapper {
                 .note(dto.note())
                 .latitude(dto.latitude())
                 .longitude(dto.longitude())
+                .nightCare(dto.nightCare())
+                .sundayCare(dto.sundayCare())
+                .holidayCare(dto.holidayCare())
+                .fullTimeCare(dto.fullTimeCare())
                 .build();
 
         List<HospitalServiceEntity> hospitalServices = dto.hospitalServices()
@@ -42,11 +47,21 @@ public interface HospitalMapper {
                         .dayOfWeek(hourDto.dayOfWeek())
                         .openTime(hourDto.openTime())
                         .closeTime(hourDto.closeTime())
+                        .orderNo(hourDto.order())
                         .hospital(hospital)
                         .build())
                 .toList();
 
-        hospital.update(hospitalServices, hospitalHours);
+        List<HospitalBreakTimeEntity> hospitalBreakTimes = dto.hospitalBreakTimes()
+                .stream().map(breakTimeDto -> HospitalBreakTimeEntity.builder()
+                        .weekType(breakTimeDto.weekType())
+                        .hospital(hospital)
+                        .startTime(breakTimeDto.startTime())
+                        .endTime(breakTimeDto.endTime())
+                        .build())
+                .toList();
+
+        hospital.update(hospitalServices, hospitalHours, hospitalBreakTimes);
         return hospital;
     }
 
