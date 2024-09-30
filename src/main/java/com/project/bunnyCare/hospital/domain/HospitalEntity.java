@@ -1,6 +1,7 @@
 package com.project.bunnyCare.hospital.domain;
 
 import com.project.bunnyCare.common.BaseEntity;
+import com.project.bunnyCare.hospital.domain.hospitalBreakTime.HospitalBreakTimeEntity;
 import com.project.bunnyCare.hospital.domain.hospitalHour.HospitalHourEntity;
 import com.project.bunnyCare.hospital.domain.hospitalService.HospitalServiceEntity;
 import jakarta.persistence.*;
@@ -38,15 +39,27 @@ public class HospitalEntity extends BaseEntity {
 
     private Double longitude; //경도
 
+    private String nightCare;   //야간진료
+
+    private String sundayCare;  //일요일진료
+
+    private String holidayCare; //공휴일진료
+
+    private String fullTimeCare; //24시간진료
+
     @OneToMany(mappedBy = "hospital", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<HospitalServiceEntity> hospitalServices;
 
     @OneToMany(mappedBy = "hospital", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<HospitalHourEntity> hospitalHours;
 
-    public void update(List<HospitalServiceEntity> hospitalServices, List<HospitalHourEntity> hospitalHours){
+    @OneToMany(mappedBy = "hospital", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<HospitalBreakTimeEntity> hospitalBreakTimes;
+
+    public void update(List<HospitalServiceEntity> hospitalServices, List<HospitalHourEntity> hospitalHours, List<HospitalBreakTimeEntity> hospitalBreakTimes) {
         this.hospitalServices = hospitalServices;
         this.hospitalHours = hospitalHours;
+        this.hospitalBreakTimes = hospitalBreakTimes;
     }
 
 }
