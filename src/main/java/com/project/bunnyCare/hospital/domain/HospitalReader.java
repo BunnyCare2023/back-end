@@ -10,4 +10,7 @@ public interface HospitalReader {
 
     List<HospitalResponse> findHospitalsForSearch(SearchHospitalRequestDto dto);
 
+    Long countTotalHospitals(SearchHospitalRequestDto dto);
+
+    HospitalEntity findById(Long hospitalId);
 }

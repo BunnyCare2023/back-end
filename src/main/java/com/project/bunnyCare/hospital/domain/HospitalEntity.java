@@ -47,6 +47,9 @@ public class HospitalEntity extends BaseEntity {
 
     private String fullTimeCare; //24시간진료
 
+    @Column(name = "delete_yn", columnDefinition = "char(1) default 'N'")
+    private String deleteYn = "N";
+
     @OneToMany(mappedBy = "hospital", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<HospitalServiceEntity> hospitalServices;
 

@@ -24,13 +24,14 @@ public class HospitalResponse {
     private Integer distance;
     private String address;
     private List<ServiceType> services;
+    private String bookmarkState;
 
 
 
     public HospitalResponse() {
     }
 
-    public HospitalResponse(Long id, String hospitalName, String workStatus, DayOfWeek dayOfWeek, LocalTime openTime, LocalTime closeTime, Integer distance, String address) {
+    public HospitalResponse(Long id, String hospitalName, String workStatus, DayOfWeek dayOfWeek, LocalTime openTime, LocalTime closeTime, Integer distance, String address, String  bookmarkState) {
         this.id = id;
         this.hospitalName = hospitalName;
         this.workStatus = workStatus;
@@ -39,7 +40,8 @@ public class HospitalResponse {
         this.closeTime = closeTime;
         this.distance = distance;
         this.address = address;
-        services = List.of();
+        this.services = List.of();
+        this.bookmarkState = bookmarkState;
     }
 
     public void setServices(List<ServiceType> services) {

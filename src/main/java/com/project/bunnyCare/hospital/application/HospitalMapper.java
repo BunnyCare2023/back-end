@@ -32,6 +32,7 @@ public interface HospitalMapper {
                 .sundayCare(dto.sundayCare())
                 .holidayCare(dto.holidayCare())
                 .fullTimeCare(dto.fullTimeCare())
+                .deleteYn("N")
                 .build();
 
         List<HospitalServiceEntity> hospitalServices = dto.hospitalServices()
