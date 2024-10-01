@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.print.Pageable;
 import java.util.List;
 
 @RestController
@@ -29,7 +30,7 @@ public class HospitalApiController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<List<SearchHospitalResponseDto>>> getHospitals(
+    public ResponseEntity<ApiResponse<SearchHospitalResponseWithPageInfoDto>> getHospitals(
             @ModelAttribute SearchHospitalRequestDto dto
             ) {
         return ResponseEntity.ok(ApiResponse.ok(HospitalResponseCode.GET_SUCCESS, hospitalService.getHospitals(dto)));

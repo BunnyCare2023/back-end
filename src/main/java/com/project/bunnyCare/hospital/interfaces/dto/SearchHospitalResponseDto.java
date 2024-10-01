@@ -19,7 +19,8 @@ public record SearchHospitalResponseDto(
         LocalTime closeTime,
         Integer distance,
         String address,
-        List<String> services
+        List<String> services,
+        String bookmarkState
 ) {
         public static SearchHospitalResponseDto of(HospitalResponse data){
                 return new SearchHospitalResponseDto(
@@ -31,7 +32,8 @@ public record SearchHospitalResponseDto(
                         data.getCloseTime(),
                         data.getDistance(),
                         data.getAddress(),
-                        data.getServices().stream().map(ServiceType::getValue).toList()
+                        data.getServices().stream().map(ServiceType::getValue).toList(),
+                        data.getBookmarkState()
                 );
         }
 

@@ -1,5 +1,8 @@
 package com.project.bunnyCare.hospital.infrastructure;
 
+import com.project.bunnyCare.bookmark.domain.QBookmarkEntity;
+import com.project.bunnyCare.common.util.AuthUtil;
+import com.project.bunnyCare.hospital.domain.HospitalEntity;
 import com.project.bunnyCare.hospital.domain.HospitalReader;
 import com.project.bunnyCare.hospital.domain.QHospitalEntity;
 import com.project.bunnyCare.hospital.domain.hospitalHour.DayOfWeek;
@@ -35,9 +38,11 @@ public class HospitalReaderImpl implements HospitalReader {
 
     @Override
     public List<HospitalResponse> findHospitalsForSearch(SearchHospitalRequestDto dto) {
+        Long userId = AuthUtil.getUserId();
         QHospitalEntity hospital = QHospitalEntity.hospitalEntity;
         QHospitalHourEntity hospitalHour = QHospitalHourEntity.hospitalHourEntity;
         QHospitalServiceEntity hospitalService = QHospitalServiceEntity.hospitalServiceEntity;
+        QBookmarkEntity bookmark = QBookmarkEntity.bookmarkEntity;
 
         LocalDate today = LocalDate.now();
         // 오늘 요일 추출
@@ -61,15 +66,17 @@ public class HospitalReaderImpl implements HospitalReader {
         BooleanBuilder booleanBuilder = new BooleanBuilder();
         // 시 조건
         booleanBuilder.and(hospital.city.eq(dto.city()));
+        // 삭제 조건
+        booleanBuilder.and(hospital.deleteYn.eq("N"));
         // 진료 상태 조건
         if(dto.hospitalStatus() != null && dto.hospitalStatus().equals("진료중")) booleanBuilder.and(workStatusExpression.eq("진료중"));
 
         // 서비스 조건
         dto.services().forEach(serviceType -> {
             if(serviceType.equals(ServiceType.MALE_NEUTERING)){
-                booleanBuilder.and(hospitalService.serviceName.eq(ServiceType.NEUTERING).and(hospitalService.serviceStatus.eq("M")));
+                booleanBuilder.and(hospitalService.serviceName.eq(ServiceType.NEUTERING).and(hospitalService.serviceStatus.in("M", "Y")));
             }else if(serviceType.equals(ServiceType.FEMAILE_NEUTERING)){
-                booleanBuilder.and(hospitalService.serviceName.eq(ServiceType.NEUTERING).and(hospitalService.serviceStatus.eq("F")));
+                booleanBuilder.and(hospitalService.serviceName.eq(ServiceType.NEUTERING).and(hospitalService.serviceStatus.in("F", "Y")));
             }else {
                 booleanBuilder.and(hospitalService.serviceName.eq(serviceType)).and(hospitalService.serviceStatus.eq("Y"));
             }
@@ -81,6 +88,7 @@ public class HospitalReaderImpl implements HospitalReader {
         if(dto.fullTimeCareYn() != null && dto.fullTimeCareYn().equals("Y")) booleanBuilder.and(hospital.fullTimeCare.eq("Y"));
 
 
+        OrderSpecifier orderSpecifier = createOrderSpecifier(dto.sortType(), distanceExpression, hospital);
 
         List<HospitalResponse> hospitalResult = jpaQueryFactory
                 .selectDistinct(Projections.constructor(HospitalResponse.class,
@@ -91,12 +99,17 @@ public class HospitalReaderImpl implements HospitalReader {
                         hospitalHour.openTime,
                         hospitalHour.closeTime,
                         distanceExpression.as("distance"),
-                        hospital.address
+                        hospital.address,
+                        new CaseBuilder().when(bookmark.state.isNull()).then("N").otherwise(bookmark.state).as("bookmarkState")
                 ))
                 .from(hospital)
                 .leftJoin(hospitalHour).on(hospital.eq(hospitalHour.hospital).and(hospitalHour.dayOfWeek.eq(day)))
                 .leftJoin(hospitalService).on(hospital.eq(hospitalService.hospital))
+                .leftJoin(bookmark).on(hospital.id.eq(bookmark.id.hospitalId).and(bookmark.id.userId.eq(userId)))
                 .where(booleanBuilder)
+                .orderBy(orderSpecifier)
+                .limit(dto.pageSize())
+                .offset((long) (dto.currentPage() - 1) * dto.pageSize())
                 .fetch();
 
         List<Long> hospitalIds = hospitalResult.stream().map(HospitalResponse::getId).toList();
@@ -116,5 +129,24 @@ public class HospitalReaderImpl implements HospitalReader {
 
 
         return hospitalResult;
+    }
+
+    @Override
+    public Long countTotalHospitals(SearchHospitalRequestDto dto) {
+        return hospitalRepository.count();
+    }
+
+    @Override
+    public HospitalEntity findById(Long hospitalId) {
+        return hospitalRepository.findById(hospitalId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 병원이 존재하지 않습니다."));
+    }
+
+    private OrderSpecifier createOrderSpecifier(String sortType, NumberExpression<Integer> distanceExpression, QHospitalEntity hospital) {
+        return switch (sortType) {
+            case "distance" -> distanceExpression.asc();
+            case "name" -> hospital.hospitalName.asc();
+            default -> hospital.id.desc();
+        };
     }
 }
