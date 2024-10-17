@@ -88,7 +88,7 @@ public class HospitalReaderImpl implements HospitalReader {
         if(dto.fullTimeCareYn() != null && dto.fullTimeCareYn().equals("Y")) booleanBuilder.and(hospital.fullTimeCare.eq("Y"));
 
 
-        OrderSpecifier orderSpecifier = createOrderSpecifier(dto.sortType(), distanceExpression, hospital);
+        OrderSpecifier orderSpecifier = createOrderSpecifier(dto.sortType(), distanceExpression, hospital, bookmark);
 
         List<HospitalResponse> hospitalResult = jpaQueryFactory
                 .selectDistinct(Projections.constructor(HospitalResponse.class,
@@ -142,10 +142,11 @@ public class HospitalReaderImpl implements HospitalReader {
                 .orElseThrow(() -> new IllegalArgumentException("해당 병원이 존재하지 않습니다."));
     }
 
-    private OrderSpecifier createOrderSpecifier(String sortType, NumberExpression<Integer> distanceExpression, QHospitalEntity hospital) {
+    private OrderSpecifier createOrderSpecifier(String sortType, NumberExpression<Integer> distanceExpression, QHospitalEntity hospital, QBookmarkEntity bookmark) {
         return switch (sortType) {
             case "distance" -> distanceExpression.asc();
             case "name" -> hospital.hospitalName.asc();
+            case "bookmark" -> bookmark.count().desc();
             default -> hospital.id.desc();
         };
     }

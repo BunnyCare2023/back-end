@@ -3,16 +3,10 @@ package com.project.bunnyCare.hospital.interfaces;
 import com.project.bunnyCare.common.api.ApiResponse;
 import com.project.bunnyCare.hospital.application.HospitalService;
 import com.project.bunnyCare.hospital.domain.HospitalResponseCode;
-import com.project.bunnyCare.hospital.interfaces.dto.CreateHospitalRequestDto;
-import com.project.bunnyCare.hospital.interfaces.dto.HospitalResponse;
-import com.project.bunnyCare.hospital.interfaces.dto.SearchHospitalRequestDto;
-import com.project.bunnyCare.hospital.interfaces.dto.SearchHospitalResponseDto;
+import com.project.bunnyCare.hospital.interfaces.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.awt.print.Pageable;
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
