@@ -1,25 +1,21 @@
 package com.project.bunnyCare.hospital.application;
 
 import com.project.bunnyCare.common.PageInfo;
-import com.project.bunnyCare.common.api.ResponseCode;
 import com.project.bunnyCare.common.util.AuthUtil;
 import com.project.bunnyCare.hospital.domain.HospitalEntity;
 import com.project.bunnyCare.hospital.domain.HospitalReader;
 import com.project.bunnyCare.hospital.domain.HospitalStore;
-import com.project.bunnyCare.hospital.interfaces.SearchHospitalResponseWithPageInfoDto;
+import com.project.bunnyCare.hospital.interfaces.dto.SearchHospitalResponseWithPageInfoDto;
 import com.project.bunnyCare.hospital.interfaces.dto.CreateHospitalRequestDto;
-import com.project.bunnyCare.hospital.interfaces.dto.HospitalResponse;
 import com.project.bunnyCare.hospital.interfaces.dto.SearchHospitalRequestDto;
 import com.project.bunnyCare.hospital.interfaces.dto.SearchHospitalResponseDto;
 import com.project.bunnyCare.user.domain.UserEntity;
 import com.project.bunnyCare.user.domain.UserReader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.awt.print.Pageable;
 import java.util.List;
 
 @Slf4j
