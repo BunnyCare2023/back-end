@@ -15,8 +15,6 @@ public record SearchHospitalRequestDto(
     String sundayCareYn,
     String holidayCareYn,
     String fullTimeCareYn,
-    Integer currentPage,
-    Integer pageSize,
     String sortType
 ) {
 }

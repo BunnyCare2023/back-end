@@ -19,8 +19,12 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.*;
 import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDate;
@@ -37,7 +41,7 @@ public class HospitalReaderImpl implements HospitalReader {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<HospitalResponse> findHospitalsForSearch(SearchHospitalRequestDto dto) {
+    public Page<HospitalResponse> findHospitalsForSearch(SearchHospitalRequestDto dto, Pageable pageable) {
         Long userId = AuthUtil.getUserId();
         QHospitalEntity hospital = QHospitalEntity.hospitalEntity;
         QHospitalHourEntity hospitalHour = QHospitalHourEntity.hospitalHourEntity;
@@ -108,9 +112,16 @@ public class HospitalReaderImpl implements HospitalReader {
                 .leftJoin(bookmark).on(hospital.id.eq(bookmark.id.hospitalId).and(bookmark.id.userId.eq(userId)))
                 .where(booleanBuilder)
                 .orderBy(orderSpecifier)
-                .limit(dto.pageSize())
-                .offset((long) (dto.currentPage() - 1) * dto.pageSize())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
+
+        JPQLQuery<Long> countQuery = jpaQueryFactory.select(hospital.count())
+                .from(hospital)
+                .leftJoin(hospitalHour).on(hospital.eq(hospitalHour.hospital).and(hospitalHour.dayOfWeek.eq(day)))
+                .leftJoin(hospitalService).on(hospital.eq(hospitalService.hospital))
+                .leftJoin(bookmark).on(hospital.id.eq(bookmark.id.hospitalId).and(bookmark.id.userId.eq(userId)))
+                .where(booleanBuilder);
 
         List<Long> hospitalIds = hospitalResult.stream().map(HospitalResponse::getId).toList();
         List<HospitalServiceEntity> services = jpaQueryFactory
@@ -127,8 +138,7 @@ public class HospitalReaderImpl implements HospitalReader {
 
         hospitalResult.forEach(hospitalResponse -> hospitalResponse.setServices(servicesMap.get(hospitalResponse.getId())));
 
-
-        return hospitalResult;
+        return PageableExecutionUtils.getPage(hospitalResult, pageable, countQuery::fetchOne);
     }
 
     @Override

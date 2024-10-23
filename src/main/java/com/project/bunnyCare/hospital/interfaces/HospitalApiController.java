@@ -5,6 +5,9 @@ import com.project.bunnyCare.hospital.application.HospitalService;
 import com.project.bunnyCare.hospital.domain.HospitalResponseCode;
 import com.project.bunnyCare.hospital.interfaces.dto.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,9 +27,10 @@ public class HospitalApiController {
     }
 
     @GetMapping
-    public ResponseEntity<ApiResponse<SearchHospitalResponseWithPageInfoDto>> getHospitals(
-            @ModelAttribute SearchHospitalRequestDto dto
+    public ResponseEntity<ApiResponse<Page<SearchHospitalResponseDto>>> getHospitals(
+            @ModelAttribute SearchHospitalRequestDto dto,
+            @PageableDefault(size = 10) Pageable pageable
             ) {
-        return ResponseEntity.ok(ApiResponse.ok(HospitalResponseCode.GET_SUCCESS, hospitalService.getHospitals(dto)));
+        return ResponseEntity.ok(ApiResponse.ok(HospitalResponseCode.GET_SUCCESS, hospitalService.getHospitals(dto, pageable)));
     }
 }
