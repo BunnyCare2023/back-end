@@ -5,10 +5,7 @@ import com.project.bunnyCare.bookmark.domain.BookmarkResponseCode;
 import com.project.bunnyCare.common.api.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,7 +14,7 @@ public class BookmarkApiController {
 
     private final BookmarkService bookmarkService;
 
-    @PostMapping("/like/{hospitalId}")
+    @PostMapping("/{hospitalId}")
     public ResponseEntity<ApiResponse<?>> likeHospital(
             @PathVariable Long hospitalId
     ) {
@@ -25,11 +22,11 @@ public class BookmarkApiController {
         return ResponseEntity.ok(ApiResponse.ok(BookmarkResponseCode.LIKE_SUCCESS,null));
     }
 
-    @PostMapping("/unlike/{hospitalId}")
+    @DeleteMapping("/{hospitalId}")
     public ResponseEntity<ApiResponse<?>> unlikeHospital(
             @PathVariable Long hospitalId
     ) {
         bookmarkService.unlikeHospital(hospitalId);
-        return ResponseEntity.ok(ApiResponse.ok(BookmarkResponseCode.LIKE_SUCCESS,null));
+        return ResponseEntity.ok(ApiResponse.ok(BookmarkResponseCode.UNLIKE_SUCCESS,null));
     }
 }
