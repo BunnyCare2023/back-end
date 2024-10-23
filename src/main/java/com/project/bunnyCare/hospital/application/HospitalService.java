@@ -13,6 +13,8 @@ import com.project.bunnyCare.user.domain.UserEntity;
 import com.project.bunnyCare.user.domain.UserReader;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,13 +40,9 @@ public class HospitalService {
         hospitalStore.save(newHospital);
     }
 
-    public SearchHospitalResponseWithPageInfoDto getHospitals(SearchHospitalRequestDto dto) {
-        List<SearchHospitalResponseDto> responseList =  hospitalReader.findHospitalsForSearch(dto)
-                .stream()
-                .map(SearchHospitalResponseDto::of)
-                .toList();
-        Long totalCount = hospitalReader.countTotalHospitals(dto);
-        PageInfo response = new PageInfo(dto.currentPage(), dto.pageSize(), totalCount);
-        return new SearchHospitalResponseWithPageInfoDto(response,responseList);
+    public  Page<SearchHospitalResponseDto> getHospitals(SearchHospitalRequestDto dto, Pageable pageable) {
+        Page<SearchHospitalResponseDto> responseList =  hospitalReader.findHospitalsForSearch(dto, pageable)
+                .map(SearchHospitalResponseDto::of);
+        return responseList;
     }
 }
