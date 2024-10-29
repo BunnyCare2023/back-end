@@ -7,7 +7,6 @@ import lombok.*;
 
 @Table(name = "hospital_service")
 @Entity
-@ToString
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -23,6 +22,6 @@ public class HospitalServiceEntity extends BaseEntity {
 
     private String serviceStatus; // C , Y, N, M,F
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     private HospitalEntity hospital;
 }

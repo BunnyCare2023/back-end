@@ -3,7 +3,9 @@ package com.project.bunnyCare.bookmark.application;
 import com.project.bunnyCare.bookmark.domain.BookmarkEntity;
 import com.project.bunnyCare.bookmark.domain.BookmarkId;
 import com.project.bunnyCare.bookmark.domain.BookmarkReader;
+import com.project.bunnyCare.bookmark.domain.BookmarkResponseCode;
 import com.project.bunnyCare.bookmark.infrastructure.BookmarkRepository;
+import com.project.bunnyCare.common.exception.ApiException;
 import com.project.bunnyCare.common.util.AuthUtil;
 import com.project.bunnyCare.hospital.domain.HospitalEntity;
 import com.project.bunnyCare.hospital.domain.HospitalReader;
@@ -33,10 +35,7 @@ public class BookmarkService {
             // 북마크 생성
             UserEntity user = userReader.findById(userId);
             HospitalEntity hospital = hospitalReader.findById(hospitalId);
-            BookmarkId bookmarkId = new BookmarkId(user.getId(), hospital.getId());
-            BookmarkEntity newBookmark = BookmarkEntity.builder()
-                            .id(bookmarkId)
-                                    .build();
+            BookmarkEntity newBookmark = new BookmarkEntity(hospital, user);
             newBookmark.like();
             bookmarkRepository.save(newBookmark);
         } else {
@@ -50,6 +49,7 @@ public class BookmarkService {
         // 북마크 존재하는지 확인 로직
         Long userId = AuthUtil.getUserId();
         BookmarkEntity bookmarkEntity = bookmarkReader.findByUserIdAndHospitalId(userId, hospitalId);
+        if(bookmarkEntity == null) throw new ApiException(BookmarkResponseCode.GET_BOOKMARK_FAIL);
         bookmarkEntity.unlike();
     }
 }

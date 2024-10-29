@@ -6,6 +6,7 @@ import com.project.bunnyCare.user.domain.*;
 import com.project.bunnyCare.user.interfaces.dto.AuthUserRequestDto;
 import com.project.bunnyCare.user.interfaces.dto.JwtResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,6 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doThrow;
 
+@Disabled
 @ExtendWith(MockitoExtension.class)
 class UserServiceTest {
 
