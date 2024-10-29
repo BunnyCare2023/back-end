@@ -9,7 +9,6 @@ import java.time.LocalTime;
 
 @Table(name = "hospital_hour")
 @Entity
-@ToString
 @Getter
 @Builder
 @NoArgsConstructor

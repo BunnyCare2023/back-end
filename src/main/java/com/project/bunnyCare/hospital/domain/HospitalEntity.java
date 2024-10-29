@@ -1,17 +1,18 @@
 package com.project.bunnyCare.hospital.domain;
 
+import com.project.bunnyCare.bookmark.domain.BookmarkEntity;
 import com.project.bunnyCare.common.BaseEntity;
 import com.project.bunnyCare.hospital.domain.hospitalBreakTime.HospitalBreakTimeEntity;
 import com.project.bunnyCare.hospital.domain.hospitalHour.HospitalHourEntity;
 import com.project.bunnyCare.hospital.domain.hospitalService.HospitalServiceEntity;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.BatchSize;
 
 import java.util.List;
 
 @Table(name = "hospital")
 @Entity
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -51,13 +52,19 @@ public class HospitalEntity extends BaseEntity {
     private String deleteYn = "N";
 
     @OneToMany(mappedBy = "hospital", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @BatchSize(size = 20)
     private List<HospitalServiceEntity> hospitalServices;
 
     @OneToMany(mappedBy = "hospital", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @BatchSize(size = 20)
     private List<HospitalHourEntity> hospitalHours;
 
     @OneToMany(mappedBy = "hospital", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @BatchSize(size = 20)
     private List<HospitalBreakTimeEntity> hospitalBreakTimes;
+
+    @OneToMany(mappedBy = "hospital", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<BookmarkEntity> bookmarks;
 
     public void update(List<HospitalServiceEntity> hospitalServices, List<HospitalHourEntity> hospitalHours, List<HospitalBreakTimeEntity> hospitalBreakTimes) {
         this.hospitalServices = hospitalServices;

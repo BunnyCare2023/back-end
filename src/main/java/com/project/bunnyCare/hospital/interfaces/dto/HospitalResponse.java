@@ -2,7 +2,6 @@ package com.project.bunnyCare.hospital.interfaces.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.project.bunnyCare.hospital.domain.hospitalHour.DayOfWeek;
-import com.project.bunnyCare.hospital.domain.hospitalService.HospitalServiceEntity;
 import com.project.bunnyCare.hospital.domain.hospitalService.ServiceType;
 import lombok.Getter;
 import lombok.ToString;
