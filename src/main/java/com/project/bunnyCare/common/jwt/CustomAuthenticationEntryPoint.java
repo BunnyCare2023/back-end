@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
+import org.springframework.web.ErrorResponse;
 
 import java.io.IOException;
 
@@ -19,17 +20,12 @@ import java.io.IOException;
 public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        UserResponseCode code;
-        if(request.getAttribute("error") != null) {
-            code = (UserResponseCode) request.getAttribute("error");
-        } else {
-            code = UserResponseCode.UNAUTHORIZED;
-        }
-        log.error("AuthenticationEntryPoint: {}", code.getMessage());
+        UserResponseCode errorResponse = (UserResponseCode) request.getAttribute("error");
+        log.warn("AuthenticationEntryPoint: {}", errorResponse.getMessage());
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         ObjectMapper obj = new ObjectMapper();
-        ApiResponse<Void> api = ApiResponse.exception(code);
+        ApiResponse<Void> api = ApiResponse.exception(errorResponse);
         response.getWriter().println(obj.writeValueAsString(api));
     }
 }
