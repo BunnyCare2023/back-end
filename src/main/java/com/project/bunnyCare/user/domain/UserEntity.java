@@ -4,6 +4,7 @@ import com.project.bunnyCare.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Objects;
 
 @Builder
@@ -33,14 +34,16 @@ public class UserEntity extends BaseEntity {
     private Role role;
 
     @Column(name = "deleted_yn")
-    @Setter
     private String deletedYn;
+
+    @Column(name = "deleted_date")
+    private LocalDate deletedDate;
 
     @Setter
     private String refreshToken;
 
 
-    public void registerNewUser(){
+    public void createUser(){
         this.deletedYn = "N";
         this.role = Role.ROLE_USER;
     }
@@ -49,8 +52,13 @@ public class UserEntity extends BaseEntity {
         this.role = Role.ROLE_ADMIN;
     }
 
+    public boolean isDeleted() {
+        return this.deletedYn.equals("Y");
+    }
+
     public void delete(){
         this.deletedYn = "Y";
+        this.deletedDate = LocalDate.now();
     }
 
     @Override
