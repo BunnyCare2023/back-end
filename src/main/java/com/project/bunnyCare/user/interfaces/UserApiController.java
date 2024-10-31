@@ -34,11 +34,10 @@ public class UserApiController {
     @GetMapping("/issue-access-token")
     public ResponseEntity<ApiResponse<AccessTokenResponseDto>> issueAccessToken(
             @CookieValue(required = false, value = "refreshToken") String refreshToken,
-            HttpServletResponse response,
-            HttpServletRequest request
+            HttpServletResponse response
             ) {
 
-        JwtResponseDto tokens = userService.issueAccessToken(refreshToken, request);
+        JwtResponseDto tokens = userService.issueAccessToken(refreshToken);
         CookieUtil.addCookie(response, "refreshToken", tokens.refreshToken(), refreshHour);
         return ResponseEntity.ok(ApiResponse.ok(UserResponseCode.ISSUE_ACCESS_TOKEN_SUCCESS, new AccessTokenResponseDto(tokens.accessToken())));
     }
