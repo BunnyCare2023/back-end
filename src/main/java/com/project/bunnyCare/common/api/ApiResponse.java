@@ -17,12 +17,15 @@ public class ApiResponse<T> {
     public static ApiResponse<Void> exception(ResponseCode code) {
         return new ApiResponse<>(ApiResult.setResult(code), null);
     }
-
     public static ApiResponse<Void> ok(ResponseCode code) {
         return new ApiResponse<>(ApiResult.setResult(code), null);
     }
 
     public static <T>ApiResponse<T> ok(ResponseCode code, T data) {
         return new ApiResponse<>(ApiResult.setResult(code), data);
+    }
+
+    public static ApiResponse<Void> badRequest(String message) {
+        return new ApiResponse<>(ApiResult.badRequest(message), null);
     }
 }

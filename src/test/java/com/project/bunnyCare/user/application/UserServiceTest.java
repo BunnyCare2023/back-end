@@ -92,7 +92,7 @@ class UserServiceTest {
         //Given
         String refreshToken = "refreshToken";
         MockHttpServletRequest mockRequest = new MockHttpServletRequest();
-        doThrow(ApiException.class).when(tokenUtil).validateToken(refreshToken, mockRequest);
+        doThrow(ApiException.class).when(tokenUtil).validateToken(refreshToken);
         //When
         //Then
         assertThrows(ApiException.class, () -> userService.issueAccessToken(refreshToken,mockRequest));

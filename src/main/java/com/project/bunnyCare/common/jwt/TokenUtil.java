@@ -85,32 +85,17 @@ public class TokenUtil implements InitializingBean {
                 .compact();
     }
 
-    public void validateToken(String token, HttpServletRequest request) {
-
-        try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-        }
-        catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            request.setAttribute("error", UserResponseCode.MAL_FORMED_TOKEN);
-        } catch (ExpiredJwtException e) {
-            request.setAttribute("error", UserResponseCode.EXPIRED_TOKEN);
-        } catch (UnsupportedJwtException e) {
-            request.setAttribute("error", UserResponseCode.UNSUPPORTED_TOKEN);
-        } catch (Exception e) {
-            request.setAttribute("error", UserResponseCode.UNAUTHORIZED);
-        }
+    public void validateToken(String token) {
+        Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
     }
 
     public String parseBearerToken(HttpServletRequest request){
-        try{
-            String bearerToken = request.getHeader("Authorization");
-            if(bearerToken.startsWith("Bearer")){
-                return bearerToken.substring(7);
-            }
-        }catch (NullPointerException e){
-            request.setAttribute("error", "jwt 토큰이 존재하지 않습니다.");
+        String bearerToken = request.getHeader("Authorization");
+        if(bearerToken.startsWith("Bearer")){
+            return bearerToken.substring(7);
+        }else {
+            return null;
         }
-        return "No JWT";
     }
 
     public Authentication getAuthentication(String token){

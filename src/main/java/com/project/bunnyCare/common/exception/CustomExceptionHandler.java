@@ -8,14 +8,13 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice
-@Order(1)
 @Slf4j
 public class CustomExceptionHandler {
 
+    @Order(1)
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<ApiResponse<Void>> apiExceptionHandler(ApiException e) {
-        log.error(e.getMessage());
-
+        log.error("CustomExceptionHandler: {}",e.getMessage());
         return ResponseEntity.status(e.getCode().getCode()).body(ApiResponse.exception(e.getCode()));
     }
 }

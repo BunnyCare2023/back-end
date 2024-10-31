@@ -15,4 +15,8 @@ public class ApiResult {
     public static ApiResult setResult(ResponseCode code) {
         return new ApiResult(code.getCode(), code.getStatus(), code.getMessage());
     }
+
+    public static ApiResult badRequest(String message) {
+        return new ApiResult(400, "BAD REQUEST", message);
+    }
 }
