@@ -18,7 +18,7 @@ public class CookieUtil {
                 .secure(true)
                 .maxAge((long) age *60*60)
                 .build();
-        log.info("set cookie: {}", cookie.toString());
+        log.debug("set cookie: {}", cookie.toString());
 
         response.addHeader("Set-Cookie", cookie.toString());
     }

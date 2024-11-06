@@ -1,8 +1,10 @@
 package com.project.bunnyCare.common.aop;
 
+import com.project.bunnyCare.common.util.LogKeyUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.annotation.After;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
@@ -37,9 +39,15 @@ public class LoggingAspect {
             String className = joinPoint.getTarget().getClass().getSimpleName();
             String methodName = joinPoint.getSignature().getName();
 
+            LogKeyUtil.createLogKey();
+
             // Log the information
-            log.info("Request Info - Timestamp: {}, Endpoint: {}, HttpMethod: {}, IpAddress: {}, UserAgent: {}, Class: {}, Method: {}",
-                    timestamp, endpoint, httpMethod, ip, userAgent, className, methodName);
+            log.info("key: {}, Timestamp: {}, Endpoint: {}, HttpMethod: {}, IpAddress: {}, UserAgent: {}, Class: {}, Method: {}",
+                    LogKeyUtil.getLogKey(), timestamp, endpoint, httpMethod, ip, userAgent, className, methodName);
         }
+    }
+    @After("apiControllerPointcut()")
+    public void removeLogKey(JoinPoint joinPoint){
+        LogKeyUtil.removeLogKey();
     }
 }
