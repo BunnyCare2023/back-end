@@ -26,7 +26,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenUtil tokenProvider;
 
-    String[] noAuthenticationUrlList = {"/actuator","/api/v1/auth"};
+    String[] noAuthenticationUrlList = {"/actuator","/api/v1/auth", "/favicon.ico"};
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         if(!noAuthenticate(request)) {
