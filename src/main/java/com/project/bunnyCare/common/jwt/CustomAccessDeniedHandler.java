@@ -18,7 +18,7 @@ import java.io.IOException;
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-        log.error("AccessDeniedHandler: {}", UserResponseCode.FORBIDDEN.getMessage());
+        log.error("AccessDeniedHandler key: {}", UserResponseCode.FORBIDDEN.getMessage());
         response.setContentType("application/json;charset=UTF-8");
         response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         ApiResponse<Void> api = ApiResponse.exception(UserResponseCode.FORBIDDEN);
