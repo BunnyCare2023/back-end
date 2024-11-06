@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- Spring Boot 프로퍼티 참조를 위해 <springProperty> 추가 -->
+    <springProperty scope="context" name="spring.log.file-path" source="spring.log.file-path"/>
+
+    <property name="CONSOLE_LOG_PATTERN" value="%boldMagenta(%d{MM-dd HH:mm:ss}) [%highlight(%-5level)] %cyan(%logger{5}.%M) - %msg %n" />
+    <property name="FILE_LOG_PATTERN" value="%d{YYYY-MM-dd HH:mm:ss.SSS} [%thread] %5level %logger - %msg%n" />
+
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+        </encoder>
+    </appender>
+
+    <appender name="SYSTEM" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${spring.log.file-path}/system.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${spring.log.file-path}/system.log.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <maxHistory>90</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <ImmediateFlush>true</ImmediateFlush>
+        </encoder>
+    </appender>
+
+    <appender name="USER" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${spring.log.file-path}/user/user.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${spring.log.file-path}/user/user.log.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <maxHistory>90</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <ImmediateFlush>true</ImmediateFlush>
+        </encoder>
+    </appender>
+
+    <appender name="AUTH_ERROR" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${spring.log.file-path}/auth/auth.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${spring.log.file-path}/auth/auth.log.%d{yyyy-MM-dd}.log.gz</fileNamePattern>
+            <maxHistory>90</maxHistory>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${FILE_LOG_PATTERN}</pattern>
+            <ImmediateFlush>true</ImmediateFlush>
+        </encoder>
+    </appender>
+
+
+    <logger name="com.project.bunnyCare.common.jwt.CustomAuthenticationEntryPoint" level="DEBUG" additivity="false">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="AUTH_ERROR" />
+    </logger>
+    <logger name="com.project.bunnyCare.common.jwt.CustomAccessDeniedHandler" level="DEBUG" additivity="false">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="AUTH_ERROR" />
+    </logger>
+    <logger name="com.project.bunnyCare.user.interfaces.UserApiController" level="DEBUG" additivity="false">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="USER" />
+    </logger>
+    <logger name="com.project.bunnyCare.user.application.UserService" level="DEBUG" additivity="false">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="USER" />
+    </logger>
+
+
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="SYSTEM" />
+    </root>
+</configuration>
