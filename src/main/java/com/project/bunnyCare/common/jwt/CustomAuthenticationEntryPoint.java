@@ -30,6 +30,6 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         ObjectMapper obj = new ObjectMapper();
         ApiResponse<Void> api = ApiResponse.exception(errorResponse);
-        response.getWriter().println(obj.writeValueAsString(api));
+        response.getWriter().write(obj.writeValueAsString(api));
     }
 }

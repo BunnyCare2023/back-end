@@ -39,6 +39,9 @@ public class UserEntity extends BaseEntity {
     @Column(name = "deleted_date")
     private LocalDate deletedDate;
 
+    @Column(name = "deleted_reason", length = 4000)
+    private String deletedReason;
+
     @Setter
     private String refreshToken;
 
@@ -56,9 +59,10 @@ public class UserEntity extends BaseEntity {
         return this.deletedYn.equals("Y");
     }
 
-    public void delete(){
+    public void delete(String deletedReason){
         this.deletedYn = "Y";
         this.deletedDate = LocalDate.now();
+        this.deletedReason = deletedReason;
     }
 
     @Override
