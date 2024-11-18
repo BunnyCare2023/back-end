@@ -10,6 +10,7 @@ import com.project.bunnyCare.user.domain.UserReader;
 import com.project.bunnyCare.user.domain.UserResponseCode;
 import com.project.bunnyCare.user.domain.UserStore;
 import com.project.bunnyCare.user.interfaces.dto.AuthUserRequestDto;
+import com.project.bunnyCare.user.interfaces.dto.DeleteUserRequest;
 import com.project.bunnyCare.user.interfaces.dto.JwtResponseDto;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -67,10 +68,10 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteUser() {
+    public void deleteUser(DeleteUserRequest request) {
         Long userId = AuthUtil.getUserId();
         // 유저와 관련된 모든 정보 삭제해야하나?
         UserEntity user = userReader.findById(userId);
-        user.delete();
+        user.delete(request.deletedReason());
     }
 }

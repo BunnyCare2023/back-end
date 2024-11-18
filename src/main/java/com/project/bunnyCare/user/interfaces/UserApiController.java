@@ -5,6 +5,7 @@ import com.project.bunnyCare.common.util.CookieUtil;
 import com.project.bunnyCare.user.application.UserService;
 import com.project.bunnyCare.user.interfaces.dto.AccessTokenResponseDto;
 import com.project.bunnyCare.user.interfaces.dto.AuthUserRequestDto;
+import com.project.bunnyCare.user.interfaces.dto.DeleteUserRequest;
 import com.project.bunnyCare.user.interfaces.dto.JwtResponseDto;
 import com.project.bunnyCare.user.domain.UserResponseCode;
 import jakarta.servlet.http.HttpServletRequest;
@@ -49,8 +50,8 @@ public class UserApiController {
     }
 
     @DeleteMapping("/delete")
-    public ResponseEntity<ApiResponse<Void>> deleteUser() {
-        userService.deleteUser();
+    public ResponseEntity<ApiResponse<Void>> deleteUser(@RequestBody DeleteUserRequest request) {
+        userService.deleteUser(request);
         return ResponseEntity.ok(ApiResponse.ok(UserResponseCode.DELETE_SUCCESS));
     }
 
