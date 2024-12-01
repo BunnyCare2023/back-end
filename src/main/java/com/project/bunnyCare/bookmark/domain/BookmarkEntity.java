@@ -20,17 +20,23 @@ public class BookmarkEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private HospitalEntity hospital;
+    private Long hospitalId;
 
-    @ManyToOne
-    private UserEntity user;
+    private Long userId;
 
     private String state; // 북마크 상태 (Y: 북마크, N: 북마크 해제)
 
-    public BookmarkEntity(HospitalEntity hospital, UserEntity user) {
-        this.hospital = hospital;
-        this.user = user;
+    public BookmarkEntity(Long hospitalId, Long userId) {
+        this.hospitalId = hospitalId;
+        this.userId = userId;
+        this.state = "Y";
+    }
+
+    public boolean isLike() {
+        return this.state.equals("Y");
+    }
+    public boolean isUnlike() {
+        return this.state.equals("N");
     }
 
     public void like() {
