@@ -49,7 +49,7 @@ public class HospitalEntity extends BaseEntity {
     private String fullTimeCare; //24시간진료
 
     @Column(name = "delete_yn", columnDefinition = "char(1) default 'N'")
-    private String deleteYn = "N";
+    private String deleteYn;
 
     @OneToMany(mappedBy = "hospital", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @BatchSize(size = 20)
@@ -63,7 +63,7 @@ public class HospitalEntity extends BaseEntity {
     @BatchSize(size = 20)
     private List<HospitalBreakTimeEntity> hospitalBreakTimes;
 
-    @OneToMany(mappedBy = "hospital", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "hospitalId", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<BookmarkEntity> bookmarks;
 
     public void update(List<HospitalServiceEntity> hospitalServices, List<HospitalHourEntity> hospitalHours, List<HospitalBreakTimeEntity> hospitalBreakTimes) {

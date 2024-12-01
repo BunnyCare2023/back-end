@@ -1,10 +1,10 @@
 package com.project.bunnyCare.bookmark.application;
 
 import com.project.bunnyCare.bookmark.domain.BookmarkEntity;
-import com.project.bunnyCare.bookmark.domain.BookmarkId;
 import com.project.bunnyCare.bookmark.domain.BookmarkReader;
 import com.project.bunnyCare.bookmark.domain.BookmarkResponseCode;
 import com.project.bunnyCare.bookmark.infrastructure.BookmarkRepository;
+import com.project.bunnyCare.bookmark.interfaces.dto.BookmarkRequestDto;
 import com.project.bunnyCare.common.exception.ApiException;
 import com.project.bunnyCare.common.util.AuthUtil;
 import com.project.bunnyCare.hospital.domain.HospitalEntity;
@@ -21,35 +21,25 @@ public class BookmarkService {
 
     private final BookmarkReader bookmarkReader;
     private final BookmarkRepository bookmarkRepository;
-    private final UserReader userReader;
-    private final HospitalReader hospitalReader;
-
 
     @Transactional
-    public void likeHospital(Long hospitalId) {
+    public void likeHospital(BookmarkRequestDto dto) {
         // 북마크 존재하는지 확인 로직
         Long userId = AuthUtil.getUserId();
-        BookmarkEntity bookmarkEntity = bookmarkReader.findByUserIdAndHospitalId(userId, hospitalId);
+        BookmarkEntity bookmarkEntity = bookmarkReader.findByUserIdAndHospitalId(userId, dto.hospitalId());
 
         if(bookmarkEntity == null) {
-            // 북마크 생성
-            UserEntity user = userReader.findById(userId);
-            HospitalEntity hospital = hospitalReader.findById(hospitalId);
-            BookmarkEntity newBookmark = new BookmarkEntity(hospital, user);
-            newBookmark.like();
-            bookmarkRepository.save(newBookmark);
+            bookmarkRepository.save(new BookmarkEntity(dto.hospitalId(), userId));
         } else {
-            // 북마크 상태 변경
-            bookmarkEntity.like();
+            if(bookmarkEntity.isUnlike()) bookmarkEntity.like();
         }
     }
 
     @Transactional
-    public void unlikeHospital(Long hospitalId) {
-        // 북마크 존재하는지 확인 로직
+    public void unlikeHospital(BookmarkRequestDto dto) {
         Long userId = AuthUtil.getUserId();
-        BookmarkEntity bookmarkEntity = bookmarkReader.findByUserIdAndHospitalId(userId, hospitalId);
+        BookmarkEntity bookmarkEntity = bookmarkReader.findByUserIdAndHospitalId(userId, dto.hospitalId());
         if(bookmarkEntity == null) throw new ApiException(BookmarkResponseCode.GET_BOOKMARK_FAIL);
-        bookmarkEntity.unlike();
+        if(bookmarkEntity.isUnlike()) bookmarkEntity.unlike();
     }
 }

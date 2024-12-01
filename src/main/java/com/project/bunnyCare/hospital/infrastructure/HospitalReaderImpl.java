@@ -109,7 +109,7 @@ public class HospitalReaderImpl implements HospitalReader {
         NumberExpression<Long> bookmarkCountExpression = Expressions.asNumber(JPAExpressions
                 .select(bookmark.count())
                 .from(bookmark)
-                .where(hospital.id.eq(bookmark.hospital.id)));
+                .where(hospital.id.eq(bookmark.hospitalId)));
 
         OrderSpecifier[] orderSpecifier = createOrderSpecifier(dto.sortType(), distanceExpression, hospital, bookmark, bookmarkCountExpression);
 
@@ -128,7 +128,7 @@ public class HospitalReaderImpl implements HospitalReader {
                 .from(hospital)
                 .leftJoin(hospitalHour).on(hospital.eq(hospitalHour.hospital).and(hospitalHour.dayOfWeek.eq(day)))
                 .leftJoin(hospitalService).on(hospital.eq(hospitalService.hospital))
-                .leftJoin(bookmark).on(hospital.id.eq(bookmark.hospital.id).and(bookmark.user.id.eq(userId)))
+                .leftJoin(bookmark).on(hospital.id.eq(bookmark.hospitalId).and(bookmark.userId.eq(userId)))
                 .where(booleanBuilder)
                 .orderBy(orderSpecifier)
                 .offset(pageable.getOffset())
@@ -139,7 +139,7 @@ public class HospitalReaderImpl implements HospitalReader {
                 .from(hospital)
                 .leftJoin(hospitalHour).on(hospital.eq(hospitalHour.hospital).and(hospitalHour.dayOfWeek.eq(day)))
                 .leftJoin(hospitalService).on(hospital.eq(hospitalService.hospital))
-                .leftJoin(bookmark).on(hospital.id.eq(bookmark.hospital.id).and(bookmark.user.id.eq(userId)))
+                .leftJoin(bookmark).on(hospital.id.eq(bookmark.hospitalId).and(bookmark.userId.eq(userId)))
                 .where(booleanBuilder);
 
         List<Long> hospitalIds = hospitalResult.stream().map(HospitalResponse::getId).toList();
@@ -211,7 +211,7 @@ public class HospitalReaderImpl implements HospitalReader {
                 .from(hospital)
                 .leftJoin(hospitalHour).on(hospital.eq(hospitalHour.hospital).and(hospitalHour.dayOfWeek.eq(day)))
                 .leftJoin(hospitalService).on(hospital.eq(hospitalService.hospital))
-                .leftJoin(bookmark).on(hospital.id.eq(bookmark.hospital.id).and(bookmark.user.id.eq(userId)))
+                .leftJoin(bookmark).on(hospital.id.eq(bookmark.hospitalId).and(bookmark.userId.eq(userId)))
                 .where(bookmark.state.eq("Y"))
                 .orderBy(distanceExpression.asc())
                 .fetch();
