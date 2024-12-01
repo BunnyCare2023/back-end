@@ -91,7 +91,7 @@ public class TokenUtil implements InitializingBean {
 
     public String parseBearerToken(HttpServletRequest request){
         String bearerToken = request.getHeader("Authorization");
-        if(bearerToken.startsWith("Bearer")){
+        if(bearerToken != null && bearerToken.startsWith("Bearer")){
             return bearerToken.substring(7);
         }else {
             return null;

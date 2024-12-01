@@ -23,7 +23,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
     private final TokenUtil tokenUtil;
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
-        UserResponseCode errorResponse = (UserResponseCode) request.getAttribute("error");
+        UserResponseCode errorResponse = request.getAttribute("error") != null? (UserResponseCode) request.getAttribute("error"): UserResponseCode.UNAUTHORIZED;
         String token = tokenUtil.parseBearerToken(request);
         log.warn("AuthenticationEntryPoint token: {}, message: {}",token , errorResponse.getMessage());
         response.setContentType("application/json;charset=UTF-8");
