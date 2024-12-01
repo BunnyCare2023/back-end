@@ -1,0 +1,58 @@
+name: Bunny Care CI/CD and alert to telegram
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Gradlew Permission
+        run: chmod +x ./gradlew
+
+      - name: Build with Gradle
+        run: ./gradlew clean test bootJar
+
+      - name: 빌드 성공 메시지 발송
+        uses: appleboy/telegram-action@master
+        if: success()
+        with:
+        to: ${{ secrets.TELEGRAM_CHAT_ID }}
+        token: ${{ secrets.TELEGRAM_TOKEN }}
+        format: markdown
+        message: |
+          Author: ${{github.actor}}
+          
+          Status: 😚 **Success**
+          
+          Commit message: ${{ github.event.commits[0].message }}
+          
+          [See changes](https://github.com/${{ github.repository }}/commit/${{github.sha}})
+
+      - name: Send Build Success Message
+        uses: appleboy/telegram-action@master
+        if: failure()
+        with:
+        to: ${{ secrets.TELEGRAM_CHAT_ID }}
+        token: ${{ secrets.TELEGRAM_TOKEN }}
+        format: markdown
+        message: |
+          Author: ${{github.actor}}
+          
+          Status: 😱 **Failure**
+          
+          Commit message: ${{ github.event.commits[0].message }}
+              
+          [link](https://github.com/${{ github.repository }}/actions)
