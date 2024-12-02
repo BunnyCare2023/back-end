@@ -25,7 +25,36 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew clean test bootJar
 
-      - name: 빌드 성공 메시지 발송
+      - name: Docker image build
+        run: docker build -t ${{ secrets.DOCKERHUB_USERNAME }}/bunny-care .
+
+      - name: docker hub login
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USER_NAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: docker image push
+        run: docker push ${{ secrets.DOCKERHUB_USER_NAME }}/test
+
+  deploy:
+    runs-on: self-hosted
+    needs: build
+
+    steps:
+      - name: docker pull
+        run: docker pull ${{ secrets.DOCKERHUB_USER_NAME }}/test
+
+      - name: docker app service container stop
+        run: docker-compose down app
+
+      - name: docker app service container start
+        run: docker-compose up app -d
+
+      - name: delete old docker image
+        run: docker system prune -f
+
+      - name: Send deploy success message
         uses: appleboy/telegram-action@master
         if: success()
         with:
@@ -34,14 +63,14 @@ jobs:
           format: markdown
           message: |
             Author: ${{github.actor}}
-            
+
             Status: 😚 **Success**
-            
+
             Commit message: ${{ github.event.commits[0].message }}
-            
+
             [See changes](https://github.com/${{ github.repository }}/commit/${{github.sha}})
 
-      - name: Send Build Success Message
+      - name: Send deploy failure message
         uses: appleboy/telegram-action@master
         if: failure()
         with:
@@ -50,9 +79,9 @@ jobs:
           format: markdown
           message: |
             Author: ${{github.actor}}
-            
+
             Status: 😱 **Failure**
-            
+
             Commit message: ${{ github.event.commits[0].message }}
-                
+
             [link](https://github.com/${{ github.repository }}/actions)
