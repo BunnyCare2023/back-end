@@ -35,7 +35,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
 
       - name: docker image push
-        run: docker push ${{ secrets.DOCKERHUB_USER_NAME }}/test
+        run: docker push ${{ secrets.DOCKERHUB_USER_NAME }}/bunny-care
 
   deploy:
     runs-on: self-hosted
@@ -43,7 +43,7 @@ jobs:
 
     steps:
       - name: docker pull
-        run: docker pull ${{ secrets.DOCKERHUB_USER_NAME }}/test
+        run: docker pull ${{ secrets.DOCKERHUB_USER_NAME }}/bunny-care
 
       - name: docker app service container stop
         run: docker-compose down app
