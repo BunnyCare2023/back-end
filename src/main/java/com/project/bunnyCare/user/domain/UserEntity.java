@@ -42,8 +42,11 @@ public class UserEntity extends BaseEntity {
     @Column(name = "deleted_reason", length = 4000)
     private String deletedReason;
 
-    @Setter
     private String refreshToken;
+
+    public void changeRefreshToken(String refreshToken){
+        this.refreshToken = refreshToken;
+    }
 
 
     public void createUser(){
