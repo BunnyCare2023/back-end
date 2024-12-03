@@ -2,6 +2,7 @@ package com.project.bunnyCare.common.jwt;
 
 import com.project.bunnyCare.user.domain.UserEntity;
 import com.project.bunnyCare.user.domain.UserResponseCode;
+import com.project.bunnyCare.user.interfaces.dto.JwtResponseDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -16,6 +17,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
@@ -47,6 +49,12 @@ public class TokenUtil implements InitializingBean {
     public void afterPropertiesSet() throws Exception {
         byte[] keyBytes = Decoders.BASE64.decode(secret);
         this.key = Keys.hmacShaKeyFor(keyBytes);
+    }
+
+    public JwtResponseDto issueTokens(UserEntity user){
+        String accessToken = issueAccessToken(user);
+        String refreshToken = issueRefreshToken(user);
+        return new JwtResponseDto(accessToken, refreshToken);
     }
 
     public String issueAccessToken(UserEntity user) {
@@ -115,6 +123,21 @@ public class TokenUtil implements InitializingBean {
                         .collect(Collectors.toList());
 
         return new UsernamePasswordAuthenticationToken(userId, null, authorities);
+    }
+
+    public LocalDate getExpiredDate(String token) {
+        Claims claims = Jwts
+                .parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+
+        Date expiredDate = claims.getExpiration();
+
+        return expiredDate.toInstant().atZone(ZoneId.systemDefault())
+                .toLocalDate();
+
     }
 
 }
